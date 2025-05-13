@@ -1,0 +1,53 @@
+% Обновлённая база фактов о книгах (сохраняются жанры, эпохи и страны)
+book("Jane Eyre", "Charlotte Brontë", romance, regency, england).
+book("Brave New World", "Aldous Huxley", dystopian, future, england).
+book("The Sun Also Rises", "Ernest Hemingway", classic, '1920s', usa).
+book("Of Mice and Men", "John Steinbeck", drama, '1930s', usa).
+book("Love in the Time of Cholera", "Gabriel Garcia Marquez", realism, '20th', colombia).
+book("Emma", "Jane Austen", romance, regency, colombia).
+
+% Предикат для запуска опроса пользователя
+start :-
+    writeln("Welcome to the Book Recommendation System!"),
+    writeln("Please answer the following questions to receive book recommendations."),
+    nl,
+    ask_genre(Genre),
+    ask_period(Period),
+    ask_country(Country),
+    recommend(Genre, Period, Country),
+    writeln("Thank you for using the Book Recommendation System. Enjoy your reading!").
+
+% Ввод жанра
+ask_genre(Genre) :-
+    writeln("What genre are you interested in? (romance, dystopian, classic, drama, realism):"),
+    read(Genre).
+
+% Ввод периода
+ask_period(Period) :-
+    writeln("In what time period would you like to find yourself? (regency, future, '1920s', '1930s', '20th'):"),
+    read(Period).
+
+% Ввод страны
+ask_country(Country) :-
+    writeln("In which country would you like to immerse yourself? (england, usa, colombia):"),
+    read(Country).
+
+% Рекомендации
+recommend(Genre, Period, Country) :-
+    findall((Title, Author),
+            book(Title, Author, Genre, Period, Country),
+            Matches),
+    print_books(Matches).
+
+% Вывод списка книг
+print_books([]) :-
+    writeln("No books found matching your criteria."), nl.
+print_books([(Title, Author)|Rest]) :-
+    writeln("Here are your recommendations:"),
+    print_each([(Title, Author)|Rest]).
+
+print_each([]).
+print_each([(Title, Author)|T]) :-
+    format("Title: ~w~n", [Title]),
+    format("Author: ~w~n~n", [Author]),
+    print_each(T).
